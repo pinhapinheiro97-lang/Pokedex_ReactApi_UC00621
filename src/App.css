@@ -53,11 +53,12 @@ body {
 
 .pokemon-list {
     display: grid;
-    grid-template-columns: repeat(3, 220px);
+    grid-template-columns: repeat(auto-fit, 220px);
     justify-content: center;
     gap: 30px;
 
-    margin-top: 40px;
+    margin: 40px auto;
+    padding: 0 20px;
 }
 
 .navbar {
@@ -136,4 +137,35 @@ body {
 
 .search-bar button:hover {
     transform: scale(1.05);
+}
+
+
+@media (max-width: 768px) {
+
+    .pokemon-list {
+        grid-template-columns: repeat(2, 220px);
+    }
+
+    .search-bar {
+        position: static;
+        transform: none;
+        margin-top: 20px;
+    }
+
+    .navbar {
+        flex-direction: column;
+        padding: 20px;
+    }
+
+}
+
+@media (max-width: 500px) {
+
+    .pokemon-list {
+        grid-template-columns: 220px;
+    }
+
+    .search-bar input {
+        width: 220px;
+    }
 }
