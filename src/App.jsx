@@ -7,32 +7,51 @@ function App() {
 
   const [pokemons, setPokemons] = useState([]);
   const [search, setSearch] = useState("");
-  const [prevPage]
+  const [currentPageUrl, setCurrentPageUrl] = useState("https://pokeapi.co/api/v2/pokemon");
+  const [nextPageUrl, setNextPageUrl] = useState(null);
+  const [prevPageUrl, setPrevPageUrl] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // em caso de erro
   const [error, setError] = useState("");
 
 
   // Obtém os primeiros 20 Pokémon da PokéAPI
-  async function fetchPokemons() {
+  async function fetchPokemons(url) {
 
-    const response = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=20");
+    setLoading(true);
 
-    // 2. Para cada Pokémon, buscar os detalhes
-    const pokemonDetails = await Promise.all(
-      response.data.results.map(async (pokemon) => {
-        const response = await axios.get(pokemon.url);
-        return response.data;
-      })
+    try {
 
-    );
-    return pokemonDetails;
+      const response = await axios.get(url);
+
+      const pokemonDetails = await Promise.all(
+        response.data.results.map(async (pokemon) => {
+          const response = await axios.get(pokemon.url);
+          return response.data;
+        })
+      );
+
+      // api devolve ja url pa pesquisa a seguir e anterior
+      setNextPageUrl(response.data.next);
+      setPrevPageUrl(response.data.previous);
+
+      return pokemonDetails;
+
+    } finally {
+
+      setLoading(false);
+
+    }
+
 
   }
 
   // obter pokemon especifico através do nome
   async function fetchPokemonByName(name) {
     try {
+      setLoading(true);
+
       const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`);
 
       return response.data;
@@ -40,6 +59,8 @@ function App() {
     } catch (error) {
       console.error(error);
       return null;
+    } finally {
+      setLoading(false);
     }
 
   }
@@ -53,12 +74,11 @@ function App() {
   // Pesquisar pokemon introduzido
   async function searchPokemon(e) {
     e.preventDefault();
-
+    setError("");
     // Se a pesquisa estiver vazia, volta a apresentar os primeiros 20 Pokémon
     if (!search.trim()) {
-      setError("");
 
-      const pokemonList = await fetchPokemons();
+      const pokemonList = await fetchPokemons(currentPageUrl);
       setPokemons(pokemonList);
       return;
 
@@ -73,37 +93,67 @@ function App() {
       return;
     }
 
+    setError("");
+    // limpar para apos pesquisar nao dar erro a carregar nos botoes
+    setNextPageUrl(null);
+    setPrevPageUrl(null);
     // Atualiza a lista apresentando apenas o Pokémon encontrado
     setPokemons([pokemon]);
   }
 
-  // executado quando app é carregada mounted
+  // passar próxima página
+  function nextPage() {
+    if (nextPageUrl) {
+      setCurrentPageUrl(nextPageUrl);
+      setSearch("");
+      setError("");
+
+    }
+  }
+
+  // passar página anterior
+  function previousPage() {
+    if (prevPageUrl) {
+      setCurrentPageUrl(prevPageUrl);
+      setSearch("");
+      setError("");
+
+    }
+
+  }
+
+
+  // executado quando app é carregada ou ha um novo pageUrl
   useEffect(() => {
     async function loadPokemons() {
 
       try {
-        const pokemonList = await fetchPokemons();
+        const pokemonList = await fetchPokemons(currentPageUrl);
         setPokemons(pokemonList);
 
       } catch (error) {
         console.log(error);
-        setError("Erro ao carregar Pokemón")
+        setError("Erro ao carregar Pokémon")
       }
 
     }
 
     loadPokemons();
-  }, []);
+  }, [currentPageUrl]);
 
   return (
 
     <div>
+      {loading && <p>A carregar Pokémon...</p>}
       <Main
         pokemons={pokemons}
         handleSearch={handleSearch}
         searchPokemon={searchPokemon}
         error={error}
-
+        nextPage={nextPage}
+        previousPage={previousPage}
+        nextPageUrl={nextPageUrl}
+        prevPageUrl={prevPageUrl}
 
       />
     </div>

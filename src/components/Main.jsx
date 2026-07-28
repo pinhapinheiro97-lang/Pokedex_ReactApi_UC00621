@@ -1,8 +1,10 @@
 import React from 'react'
 import PokemonList from './PokemonList.jsx'
 import Header from './Header.jsx'
+import Pagination from './Pagination.jsx'
 
-const Main = ({ pokemons, handleSearch, searchPokemon, error }) => {
+
+const Main = ({ pokemons, handleSearch, searchPokemon, error, nextPage, previousPage, nextPageUrl, prevPageUrl }) => {
     return (
         <div>
             {/* Barra de navegação com o logótipo e a pesquisa */}
@@ -17,9 +19,12 @@ const Main = ({ pokemons, handleSearch, searchPokemon, error }) => {
 
 
             {/* Lista de Pokémon obtidos através da API */}
-            <PokemonList pokemons={pokemons}
-
-            />
+            <PokemonList pokemons={pokemons} />
+            <Pagination nextPage={nextPage}
+                previousPage={previousPage}
+                nextPageUrl={nextPageUrl}
+                prevPageUrl={prevPageUrl}
+            ></Pagination>
         </div>
     )
 }
