@@ -1,10 +1,13 @@
 import React from 'react'
 import pokelogo from "../assets/pokelogo.png";
 
-export const Header = ({ handleSearch, searchPokemon }) => {
+export const Header = ({ handleSearch, searchPokemon, goHome }) => {
     return (
         <nav className="navbar">
-            <div className="logo">
+            <div
+                className="logo"
+                onClick={goHome}
+            >
                 <img src={pokelogo} alt="Pokémon" />
             </div>
 

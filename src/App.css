@@ -80,7 +80,7 @@ body {
 
     color: #e3350d;
     /* vermelho Pokémon */
-
+    cursor: pointer;
     text-transform: uppercase;
 }
 

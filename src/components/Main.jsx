@@ -4,13 +4,14 @@ import Header from './Header.jsx'
 import Pagination from './Pagination.jsx'
 
 
-const Main = ({ pokemons, handleSearch, searchPokemon, error, nextPage, previousPage, nextPageUrl, prevPageUrl }) => {
+const Main = ({ pokemons, handleSearch, searchPokemon, error, nextPage, previousPage, nextPageUrl, prevPageUrl, goHome }) => {
     return (
         <div>
             {/* Barra de navegação com o logótipo e a pesquisa */}
 
             <Header handleSearch={handleSearch}
                 searchPokemon={searchPokemon}
+                goHome={goHome}
 
             />
 

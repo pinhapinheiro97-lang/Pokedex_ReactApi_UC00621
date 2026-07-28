@@ -131,6 +131,16 @@ function App() {
 
   }
 
+  function goHome() {
+    setCurrentPageUrl("https://pokeapi.co/api/v2/pokemon");
+    setError("");
+    setSearch("");
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
 
   // executado quando app é carregada ou ha um novo pageUrl
   useEffect(() => {
@@ -163,6 +173,7 @@ function App() {
         previousPage={previousPage}
         nextPageUrl={nextPageUrl}
         prevPageUrl={prevPageUrl}
+        goHome={goHome}
 
       />
     </div>
