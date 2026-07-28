@@ -108,6 +108,10 @@ function App() {
       setSearch("");
       setError("");
 
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
     }
   }
 
@@ -117,6 +121,11 @@ function App() {
       setCurrentPageUrl(prevPageUrl);
       setSearch("");
       setError("");
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
 
     }
 
