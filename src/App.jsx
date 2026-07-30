@@ -23,12 +23,23 @@ function App() {
 
     try {
 
+      // Obtém a lista de Pokémon da página atual
       const response = await axios.get(url);
 
+      // Para cada Pokémon da lista, obtém os seus detalhes e informação adicional
       const pokemonDetails = await Promise.all(
         response.data.results.map(async (pokemon) => {
-          const response = await axios.get(pokemon.url);
-          return response.data;
+          const response = await axios.get(pokemon.url);         // Obtém os dados principais do Pokémon
+          const pokemonData = response.data;
+          const species = await fetchPokemonSpecies(pokemonData.id);        // Obtém a descrição e a região do Pokémon
+
+
+          // retornar objeto com info completa
+          return {
+            ...pokemonData,
+            description: species.description,
+            region: species.region
+          };
         })
       );
 
@@ -47,6 +58,8 @@ function App() {
 
   }
 
+
+
   // obter pokemon especifico através do nome
   async function fetchPokemonByName(name) {
     try {
@@ -54,7 +67,14 @@ function App() {
 
       const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`);
 
-      return response.data;
+      const pokemon = response.data;
+      const species = await fetchPokemonSpecies(pokemon.id);
+
+      return {
+        ...pokemon,
+        description: species.description,
+        region: species.region
+      };
 
     } catch (error) {
       console.error(error);
@@ -63,6 +83,54 @@ function App() {
       setLoading(false);
     }
 
+  }
+
+  // obter descrição e região pokemon
+
+  async function fetchPokemonSpecies(id) {
+    try {
+
+      const response = await axios.get(
+        `https://pokeapi.co/api/v2/pokemon-species/${id}`
+      );
+
+      const species = response.data;
+
+      // Procura a primeira descrição disponível em inglês
+      const description = species.flavor_text_entries
+        .find(entry => entry.language.name === "en")
+        ?.flavor_text
+        .replace(/\n|\f/g, " ");
+
+      // Associação entre gerações e respetivas regiões
+      const regions = {
+        "generation-i": "Kanto",
+        "generation-ii": "Johto",
+        "generation-iii": "Hoenn",
+        "generation-iv": "Sinnoh",
+        "generation-v": "Unova",
+        "generation-vi": "Kalos",
+        "generation-vii": "Alola",
+        "generation-viii": "Galar",
+        "generation-ix": "Paldea"
+      };
+
+      // Devolve apenas a informação necessária
+      return {
+        description,
+        region: regions[species.generation.name]
+      };
+
+    } catch (error) {
+
+      console.error(error);
+
+      return {
+        description: "Descrição indisponível.",
+        region: "Desconhecida"
+      };
+
+    }
   }
 
   // atualiza o estado da pesquisa sempre que o user escreve

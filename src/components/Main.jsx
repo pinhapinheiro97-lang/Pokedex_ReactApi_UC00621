@@ -1,4 +1,3 @@
-import React from 'react'
 import PokemonList from './PokemonList.jsx'
 import Header from './Header.jsx'
 import Pagination from './Pagination.jsx'
