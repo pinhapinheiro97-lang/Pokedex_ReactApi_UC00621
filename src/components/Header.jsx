@@ -1,7 +1,7 @@
 import React from 'react'
 import pokelogo from "../assets/pokelogo.png";
 
-export const Header = ({ handleSearch, searchPokemon, goHome }) => {
+export const Header = ({ handleSearch, searchPokemon, goHome, search }) => {
     return (
         <nav className="navbar">
             <div
@@ -13,6 +13,7 @@ export const Header = ({ handleSearch, searchPokemon, goHome }) => {
 
             <form className="search-bar" onSubmit={searchPokemon}>
                 <input
+                    value={search}
                     onChange={handleSearch}
                     type="text"
                     placeholder="Pesquisar..."

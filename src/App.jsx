@@ -142,6 +142,8 @@ function App() {
   // Pesquisar pokemon introduzido
   async function searchPokemon(e) {
     e.preventDefault();
+
+
     setError("");
     // Se a pesquisa estiver vazia, volta a apresentar os primeiros 20 Pokémon
     if (!search.trim()) {
@@ -199,10 +201,15 @@ function App() {
 
   }
 
-  function goHome() {
-    setCurrentPageUrl("https://pokeapi.co/api/v2/pokemon");
+  async function goHome() {
     setError("");
     setSearch("");
+
+    // para re-render sempre que se carrega no logo
+    const pokemonList = await fetchPokemons("https://pokeapi.co/api/v2/pokemon");
+    setPokemons(pokemonList);
+
+    setCurrentPageUrl("https://pokeapi.co/api/v2/pokemon");
 
     window.scrollTo({
       top: 0,
@@ -236,6 +243,7 @@ function App() {
         pokemons={pokemons}
         handleSearch={handleSearch}
         searchPokemon={searchPokemon}
+        search={search}
         error={error}
         nextPage={nextPage}
         previousPage={previousPage}
